@@ -19,7 +19,6 @@ const taskSchema = new mongoose.Schema({
   }
 });
 
-// Pre-save hook to set completedTime if completed is true
 taskSchema.pre('save', function(next) {
     if (this.completed && !this.completedTime) {
       this.completedTime = new Date();

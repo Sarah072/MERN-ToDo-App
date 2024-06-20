@@ -13,6 +13,7 @@ const deleteTask = async (req, res) => {
     const taskNameToDelete = req.body.task; 
   
     try {
+    
       const deletedTask = await Task.findOneAndDelete({ task: taskNameToDelete });
   
       if (!deletedTask) {
@@ -28,9 +29,11 @@ const deleteTask = async (req, res) => {
 
 const createTask = async (req, res) => {
     console.log(req.body.task,req.body.completed);
+
   const task = new Task({
     task: req.body.task,
     completed: req.body.completed,
+    completedTime: req.body.completed ? new Date() : null
 
   });
   try {
@@ -40,28 +43,32 @@ const createTask = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-
 const updateTask = async (req, res) => {
-    const taskNameToUpdate = req.body.task; 
-    const completedValue = req.body.completed;
-    console.log(req.body.completed);
+  const taskNameToUpdate = req.body.task;
+  const completedValue = req.body.completed;
+  console.log(req.body.completed);
 
-    try {
-       
-        const updatedTask = await Task.findOneAndUpdate(
-            { task: taskNameToUpdate },
-            { completed: completedValue },
-            { new: true } 
-        );
+  try {
+    let task = await Task.findOne({ task: taskNameToUpdate });
 
-        if (!updatedTask) {
-            return res.status(404).json({ message: "Task not found" });
-        }
-
-        res.json({ message: "Task updated successfully", updatedTask });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
     }
+
+    task.completed = completedValue;
+   
+    if (!task.creationTime) {
+      task.creationTime = Date.now;
+    }
+
+    task.completedTime = completedValue ? new Date() : null;
+
+    const updatedTask = await task.save();
+
+    res.json({ message: "Task updated successfully", updatedTask });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 

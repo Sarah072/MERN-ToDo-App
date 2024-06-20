@@ -13,7 +13,6 @@ const deleteTask = async (req, res) => {
     const taskNameToDelete = req.body.task; 
   
     try {
-      // Find the task by its name and delete it
       const deletedTask = await Task.findOneAndDelete({ task: taskNameToDelete });
   
       if (!deletedTask) {

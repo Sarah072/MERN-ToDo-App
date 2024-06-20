@@ -125,7 +125,7 @@ const TodoApp = () => {
 
   const handleInputKeyDown = (e) => {
     if (e.key === 'Enter') {
-      e.preventDefault(); // Prevent default behavior of form submission
+      e.preventDefault(); 
       AddTask();
     }
   };

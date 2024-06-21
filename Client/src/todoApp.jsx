@@ -10,7 +10,7 @@ import api from './axiosConfig';
 const TodoApp = () => {
     const [dropDown, setDropDown] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedOptions, setSelectedOptions] = useState([]);
+    const [isVisible, setIsVisible] = useState(false);
     const [taskInput, setTaskInput] = useState('');
     const [list, setList] = useState([]);
     const [addClicked, setAddClicked] = useState(false);
@@ -105,13 +105,6 @@ const TodoApp = () => {
         console.error('Error fetching tasks:', error);
       }
     };
-    
-
-    useEffect(() => {
-     
-      fetchTasks();
-  }, []); 
-  
 
   const handleArrowDown = () => {
     setArrowDown(true);
@@ -129,8 +122,16 @@ const TodoApp = () => {
       AddTask();
     }
   };
-  //sm:w-1/2
-  
+
+  useEffect(() => {
+    fetchTasks();
+}, []); 
+
+
+  useEffect(() => {
+    setIsVisible(arrowDown);
+  }, [arrowDown]);
+
     return (
       <div className="relative w-full h-screen">
      <div className="bg-hero-pattern bg-cover bg-center bg-fixed w-full h-screen">
@@ -184,13 +185,13 @@ const TodoApp = () => {
               />
 
               <button
-                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-900"
+                className="bg-black text-white px-4 py-2 rounded hover:bg-red-300 hover:text-black"
                 onClick={AddTask}
               >
                 Add
               </button>
               <button
-                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 ml-3"
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-red-300 hover:text-black ml-3"
                 onClick={toggleModal}
               >
                 Cancel
@@ -201,7 +202,11 @@ const TodoApp = () => {
       </div>
 
       {arrowDown && (
-      <div className="flex flex-col items-center">
+     <div
+     className={`flex flex-col items-center mt-10 transition-transform duration-500 ease-in-out transform ${
+       isVisible ? 'translate-y-0' : '-translate-y-full'
+     }`}
+   >
         {list.map((task, index) => (
           <div
             key={index}
@@ -231,13 +236,13 @@ const TodoApp = () => {
                     <p className="mb-3">Are you sure you want to delete?</p>
                     <div className="flex items-center justify-center">
                       <button
-                        className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-900"
+                        className="bg-black text-white px-4 py-2 rounded hover:bg-red-300 hover:text-black"
                         onClick={() => deleteTask(task.task)}
                       >
                         Delete
                       </button>
                       <button
-                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 ml-3"
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-red-300 hover:text-black ml-3"
                         onClick={() => setDeleteClick(false)}
                       >
                         Cancel
@@ -258,7 +263,6 @@ const TodoApp = () => {
 };
 
 export default TodoApp;
-
 
 
 
